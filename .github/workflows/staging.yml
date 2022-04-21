@@ -27,8 +27,7 @@ jobs:
         working-directory: ./app
 
       - name: Run Tests
-        run: npm test
-        working-directory: ./app
+        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from node-app
 
   Deploy-Staging:
     runs-on: ubuntu-latest
