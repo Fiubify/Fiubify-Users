@@ -2,7 +2,7 @@ name: Staging Workflow
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
   workflow_dispatch:
 
@@ -27,8 +27,7 @@ jobs:
         working-directory: ./app
 
       - name: Run Tests
-        run: npm test
-        working-directory: ./app
+        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from node-app
 
   Deploy-Staging:
     runs-on: ubuntu-latest
@@ -41,7 +40,7 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "fiubify-middleware-staging"
+          heroku_app_name: "fiubify-users-staging"
           heroku_email: "services.manager.web@gmail.com"
           usedocker: true
           appdir: ./app
