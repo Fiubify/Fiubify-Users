@@ -2,7 +2,7 @@ name: Staging Workflow
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
   workflow_dispatch:
 
@@ -41,7 +41,7 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "fiubify-middleware-staging"
+          heroku_app_name: "fiubify-users-staging"
           heroku_email: "services.manager.web@gmail.com"
           usedocker: true
           appdir: ./app
