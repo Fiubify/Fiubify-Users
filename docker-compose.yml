@@ -1,0 +1,13 @@
+services:
+  node-app:
+    image: node-backend
+    build:
+      context: app
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=DEV
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app
+      - /app/node_modules

@@ -1,0 +1,9 @@
+# Node packages
+node_modules
+
+# Git related files
+.gitignore
+
+# Docker related files
+.dockerignore
+Dockerfile
