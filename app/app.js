@@ -1,12 +1,5 @@
 const express = require('express');
 
-const admin = require('firebase-admin');
-const serviceAccount = require('./config/fiubify-firebase-adminsdk-5fktf-c29a583ecf.json');
-//TODO pasar a secret
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
 // Routes import
 const authRouter = require('./routes/auth_routes');
 
