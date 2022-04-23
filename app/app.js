@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 // Routes
-app.use('/auth', authRouter);
+app.use('/user', authRouter);
 
 app.get('/', (req, res) => {
   res.send('Initial Setup');

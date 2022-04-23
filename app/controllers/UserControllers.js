@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 
 const firebaseAuth = firebase.getAuth();
 
-const authWithEmailAndPassword = async (req, res) => {
+const createUserWithEmailAndPassword = async (req, res) => {
   const { email, password, role } = req.body;
 
   try {
@@ -28,6 +28,17 @@ const authWithEmailAndPassword = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().all();
+
+    res.status(200).json({ data: { users: users } });
+  } catch (_) {
+    res.status(500).json({ error: { msg: 'Internal Error' } });
+  }
+};
+
 module.exports = {
-  authWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  getAllUsers,
 };
