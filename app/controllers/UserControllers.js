@@ -16,7 +16,6 @@ const createUserWithEmailAndPassword = async (req, res) => {
     const newUser = new User({
       uid: createdUser.uid,
       email: email,
-      password: password,
       role: role,
     });
 
