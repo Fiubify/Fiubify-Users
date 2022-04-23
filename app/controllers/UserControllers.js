@@ -7,16 +7,17 @@ const createUserWithEmailAndPassword = async (req, res) => {
   const { email, password, role } = req.body;
 
   try {
-    const newUser = new User({
-      email: email,
-      password: password,
-      role: role,
-    });
-
     let createdUser = await firebaseAuth.createUser({
       email: email,
       password: password,
       disabled: false,
+    });
+
+    const newUser = new User({
+      uid: createdUser.uid,
+      email: email,
+      password: password,
+      role: role,
     });
 
     await newUser.save();
@@ -38,7 +39,41 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const blockUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const userToBlock = await User.findById(userId);
+
+    await userToBlock.updateOne({ disabled: true });
+    await firebaseAuth.updateUser(userToBlock.uid, { disabled: true });
+
+    res.status(204).json({});
+  } catch (e) {
+    console.log(e);
+    res.status(404).json({ error: { msg: 'Id not found' } });
+  }
+};
+
+const unblockUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const userToUnblock = await User.findById(userId);
+
+    await userToUnblock.updateOne({ disabled: false });
+    await firebaseAuth.updateUser(userToUnblock.uid, { disabled: false });
+
+    res.status(204).json({});
+  } catch (e) {
+    console.log(e);
+    res.status(404).json({ error: { msg: 'Id not found' } });
+  }
+};
+
 module.exports = {
   createUserWithEmailAndPassword,
   getAllUsers,
+  blockUser,
+  unblockUser,
 };
