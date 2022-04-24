@@ -4,6 +4,9 @@ const express = require('express');
 const userRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');
 
+// Middlewares import
+const errorHandlerMiddleware = require('./middleware/errorHandler');
+
 const app = express();
 
 // Middlewares
@@ -17,5 +20,8 @@ app.use('/auth', authRouter);
 app.get('/', (req, res) => {
   res.send('Initial Setup');
 });
+
+// Error handling middlewares
+app.use(errorHandlerMiddleware);
 
 module.exports = app;
