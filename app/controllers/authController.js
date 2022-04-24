@@ -1,10 +1,8 @@
-const firebase = require('firebase-admin/auth');
+const firebaseAuth = require('../services/firebase').auth;
 const User = require('../models/userModel');
 
 const apiError = require('../errors/apiError');
 const firebaseError = require('../errors/firebaseError');
-
-const firebaseAuth = firebase.getAuth();
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
   const { email, password, role } = req.body;

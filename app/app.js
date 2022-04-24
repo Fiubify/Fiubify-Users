@@ -1,5 +1,9 @@
 const express = require('express');
 
+// Initialize global services
+require('./services/firebase');
+require('./services/db');
+
 // Routes import
 const userRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');

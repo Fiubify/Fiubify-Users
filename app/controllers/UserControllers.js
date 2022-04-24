@@ -1,8 +1,6 @@
-const firebase = require('firebase-admin/auth');
+const firebaseAuth = require('../services/firebase').auth;
 const User = require('../models/userModel');
 const apiError = require('../errors/apiError');
-
-const firebaseAuth = firebase.getAuth();
 
 const getAllUsers = async (req, res, next) => {
   try {
