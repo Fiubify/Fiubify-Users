@@ -18,4 +18,4 @@ ENV PORT=3000
 EXPOSE ${PORT}
 
 # Run the app
-CMD if [ "$NODE_ENV"="DEV" ] ; then npm run dev; else npm run start ; fi
+CMD if [ "$NODE_ENV"="DEV" ]; then npm run dev; else npm run start ; fi
