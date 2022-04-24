@@ -28,6 +28,25 @@ const createUserWithEmailAndPassword = async (req, res) => {
   }
 };
 
+const createUserWithProvider = async (req, res) => {
+  const { email, role, uid } = req.body;
+
+  try {
+    const newUser = new User({
+      uid: uid,
+      email: email,
+      role: role,
+    });
+
+    await newUser.save();
+    res.status(200).json({ data: { uid: uid, role: role } });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error });
+  }
+};
+
 module.exports = {
   createUserWithEmailAndPassword,
+  createUserWithProvider,
 };
