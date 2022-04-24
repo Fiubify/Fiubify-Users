@@ -22,9 +22,12 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       role: role,
     });
 
-    await newUser.save();
+    const mongoCreatedUser = await newUser.save();
 
-    res.status(200).json({ data: { uid: createdUser.uid, role: role } });
+    //TODO validate result data
+    res
+      .status(201)
+      .json({ data: { uid: createdUser.uid, id: mongoCreatedUser.id } });
   } catch (error) {
     console.log(error);
     if (firebaseError.isAFirebaseError(error)) {
@@ -47,8 +50,10 @@ const createUserWithProvider = async (req, res, next) => {
       role: role,
     });
 
-    await newUser.save();
-    res.status(200).json({ data: { uid: uid, role: role } });
+    const createdUser = await newUser.save();
+
+    //TODO validate result data
+    res.status(201).json({ data: { uid: uid, id: createdUser.id } });
   } catch (error) {
     console.log(error);
     if (firebaseError.isAFirebaseError(error)) {
@@ -61,7 +66,43 @@ const createUserWithProvider = async (req, res, next) => {
   }
 };
 
+const validateAuth = async (req, res, next) => {
+  const { token, role } = req.body;
+  try {
+    const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
+    const userUid = firebaseUser.uid.toString();
+
+    const mongooseUser = await User.findOne({
+      uid: userUid,
+    });
+
+    if (mongooseUser === null) {
+      next(
+        apiError.resourceNotFound(`User with uid ${userUid} doesn't exists`)
+      );
+      return;
+    }
+
+    if (mongooseUser.role != role) {
+      next(apiError.forbiddenError(`You need to be a ${role} to access`));
+      return;
+    }
+
+    res.status(200).json({});
+  } catch (error) {
+    console.log(error);
+    if (firebaseError.isAFirebaseError(error)) {
+      next(firebaseError.handleError(error, apiError));
+      return;
+    }
+
+    next(apiError.internalError(error));
+    return;
+  }
+};
+
 module.exports = {
   createUserWithEmailAndPassword,
   createUserWithProvider,
+  validateAuth,
 };

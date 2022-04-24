@@ -16,6 +16,14 @@ class ApiError {
     return new ApiError(500, msg);
   }
 
+  static authorizationError(msg) {
+    return new ApiError(401, msg);
+  }
+
+  static forbiddenError(msg) {
+    return new ApiError(403, msg);
+  }
+
   toJson() {
     return {
       error: {

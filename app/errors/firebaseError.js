@@ -22,6 +22,8 @@ class FirebaseAuthErrorHandler {
       errorCode === 'auth/invalid-password'
     ) {
       return new errorClass(400, errorJson.message);
+    } else if (errorCode === 'auth/invalid-id-token') {
+      return new errorClass(401, 'Invalid token');
     } else {
       return new errorClass(500, errorJson.message);
     }
