@@ -1,6 +1,8 @@
 const firebase = require('firebase-admin/auth');
 const User = require('../models/userModel');
-const authError = require('../errors/authError');
+
+const apiError = require('../errors/apiError');
+const firebaseError = require('../errors/firebaseError');
 
 const firebaseAuth = firebase.getAuth();
 
@@ -25,7 +27,13 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
     res.status(200).json({ data: { uid: createdUser.uid, role: role } });
   } catch (error) {
     console.log(error);
-    next(authError.invalidArguments('Invalid arguments passed'));
+    if (firebaseError.isAFirebaseError(error)) {
+      next(firebaseError.handleError(error, apiError));
+      return;
+    }
+    //TODO handle mongoose errors
+    next(apiError.invalidArguments('Invalid arguments passed'));
+    return;
   }
 };
 
@@ -43,7 +51,13 @@ const createUserWithProvider = async (req, res, next) => {
     res.status(200).json({ data: { uid: uid, role: role } });
   } catch (error) {
     console.log(error);
-    next(authError.invalidArguments('Invalid arguments passed'));
+    if (firebaseError.isAFirebaseError(error)) {
+      next(firebaseError.handleError(error, apiError));
+      return;
+    }
+    //TODO handle mongoose errors
+    next(apiError.invalidArguments('Invalid arguments passed'));
+    return;
   }
 };
 

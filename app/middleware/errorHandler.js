@@ -1,7 +1,9 @@
-const errorInterface = require('../errors/errorInterface');
+const apiError = require('../errors/apiError');
 
 function errorHandler(err, req, res, _next) {
-  if (err instanceof errorInterface) {
+  console.log('error', err);
+  console.log('Roberto');
+  if (err instanceof apiError) {
     res.status(err.code).json(err.toJson());
     return;
   }

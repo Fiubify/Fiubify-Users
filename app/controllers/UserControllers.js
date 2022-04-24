@@ -1,6 +1,6 @@
 const firebase = require('firebase-admin/auth');
 const User = require('../models/userModel');
-const userError = require('../errors/userError');
+const apiError = require('../errors/apiError');
 
 const firebaseAuth = firebase.getAuth();
 
@@ -10,7 +10,7 @@ const getAllUsers = async (req, res, next) => {
 
     res.status(200).json({ data: { users: users } });
   } catch (e) {
-    next(userError.internalError('Internal error'));
+    next(apiError.internalError('Internal error'));
     return;
   }
 };
@@ -21,7 +21,7 @@ const blockUser = async (req, res, next) => {
   const userToBlock = await User.findById(userId);
 
   if (userToBlock === null) {
-    next(userError.userNotFound(`User with id ${userId} doesn't exists`));
+    next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
     return;
   }
 
@@ -32,7 +32,7 @@ const blockUser = async (req, res, next) => {
     res.status(204).json({});
   } catch (e) {
     console.log(e);
-    next(userError.internalError('Internal error when trying to block user'));
+    next(apiError.internalError('Internal error when trying to block user'));
     return;
   }
 };
@@ -42,7 +42,7 @@ const unblockUser = async (req, res, next) => {
 
   const userToUnblock = await User.findById(userId);
   if (userToUnblock === null) {
-    next(userError.userNotFound(`User with id ${userId} doesn't exists`));
+    next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
     return;
   }
 
@@ -53,7 +53,7 @@ const unblockUser = async (req, res, next) => {
     res.status(204).json({});
   } catch (e) {
     console.log(e);
-    next(userError.internalError('Internal error when trying to unblock user'));
+    next(apiError.internalError('Internal error when trying to unblock user'));
     return;
   }
 };

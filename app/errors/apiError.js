@@ -4,6 +4,18 @@ class ApiError {
     this.message = message;
   }
 
+  static resourceNotFound(msg) {
+    return new ApiError(404, msg);
+  }
+
+  static invalidArguments(msg) {
+    return new ApiError(400, msg);
+  }
+
+  static internalError(msg) {
+    return new ApiError(500, msg);
+  }
+
   toJson() {
     return {
       error: {
