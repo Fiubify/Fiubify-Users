@@ -21,13 +21,17 @@ jobs:
       - name: Install npm dependencies
         run: npm install --only=dev
         working-directory: ./app
-      
+
       - name: Run linter
         run: npx eslint .
         working-directory: ./app
 
       - name: Run Tests
         run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from node-app
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          CODECOV_SHA: ${{ github.sha }}
+
 
   Deploy-Staging:
     runs-on: ubuntu-latest
