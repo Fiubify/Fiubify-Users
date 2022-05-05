@@ -4,3 +4,4 @@ services:
     environment:
       - NODE_ENV=TEST
       - CODECOV_TOKEN=${CODECOV_TOKEN}
+      - CODECOV_SHA=${CODECOV_SHA}
