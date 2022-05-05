@@ -1,8 +1,6 @@
 name: Staging Workflow
 
-on:
-  pull_request:
-    branches: [ master ]
+on: push
 
   workflow_dispatch:
 
@@ -31,23 +29,4 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  Deploy-Staging:
-    runs-on: ubuntu-latest
-    needs: Build
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Deploy Staging
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "fiubify-users-staging"
-          heroku_email: "services.manager.web@gmail.com"
-          usedocker: true
-          appdir: ./app
-          docker_build_args: |
-            NODE_ENV
-        env:
-          NODE_ENV: STAGING
 

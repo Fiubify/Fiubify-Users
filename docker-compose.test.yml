@@ -1,5 +1,6 @@
 services:
   node-app:
-    command: "npm test"
+    command: "./test_and_coverage.sh"
     environment:
       - NODE_ENV=TEST
+      - CODECOV_TOKEN=CODECOV_TOKEN
