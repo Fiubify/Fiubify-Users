@@ -22,11 +22,15 @@ jobs:
         run: npx eslint .
         working-directory: ./app
 
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha::$(git rev-parse HEAD)"
+
       - name: Run Tests
         run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --exit-code-from node-app
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          CODECOV_SHA: ${{ github.sha }}
+          CODECOV_SHA: ${{ steps.vars.outputs.sha }}
 
 
 
