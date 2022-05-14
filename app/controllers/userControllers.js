@@ -13,6 +13,20 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    const userId = req.params.uid;
+
+    if (!userId) next(apiError.resourceNotFound("No hay uid"))
+    const user = await User.findOne({uid: userId})
+    if (!user) next(apiError.resourceNotFound("No se encontró el usuario"))
+
+    res.status(200).json(user)
+  } catch (e) {
+    next(apiError.internalError('Internal error'))
+  }
+}
+
 const blockUser = async (req, res, next) => {
   const userId = req.params.id;
 
@@ -59,4 +73,5 @@ module.exports = {
   getAllUsers,
   blockUser,
   unblockUser,
+  getUser
 };
