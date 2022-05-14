@@ -5,7 +5,7 @@ const apiError = require("../errors/apiError");
 const firebaseError = require("../errors/firebaseError");
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
-  const { email, password, role } = req.body;
+  const { email, password, role, name, surname, birthdate, plan } = req.body;
 
   try {
     let createdUser = await firebaseAuth.createUser({
@@ -18,6 +18,10 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       uid: createdUser.uid,
       email: email,
       role: role,
+      name: name,
+      surname: surname,
+      birthdate: birthdate,
+      plan: plan,
     });
 
     const mongoCreatedUser = await newUser.save();
