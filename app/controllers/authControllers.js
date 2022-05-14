@@ -1,8 +1,8 @@
-const firebaseAuth = require('../services/firebase').auth;
-const User = require('../models/userModel');
+const firebaseAuth = require("../services/firebase").auth;
+const User = require("../models/userModel");
 
-const apiError = require('../errors/apiError');
-const firebaseError = require('../errors/firebaseError');
+const apiError = require("../errors/apiError");
+const firebaseError = require("../errors/firebaseError");
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
   const { email, password, role } = req.body;
@@ -33,7 +33,7 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       return;
     }
     //TODO handle mongoose errors
-    next(apiError.invalidArguments('Invalid arguments passed'));
+    next(apiError.invalidArguments("Invalid arguments passed"));
     return;
   }
 };
@@ -59,13 +59,12 @@ const createUserWithProvider = async (req, res, next) => {
       return;
     }
     //TODO handle mongoose errors
-    next(apiError.invalidArguments('Invalid arguments passed'));
+    next(apiError.invalidArguments("Invalid arguments passed"));
     return;
   }
 };
 
-const validateAuth = async (req, res, next) => {
-  const { token, role } = req.body;
+const validateTokenAndRole = async (token, role) => {
   try {
     const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
     const userUid = firebaseUser.uid.toString();
@@ -75,32 +74,53 @@ const validateAuth = async (req, res, next) => {
     });
 
     if (mongooseUser === null) {
-      next(
-        apiError.resourceNotFound(`User with uid ${userUid} doesn't exists`)
+      return apiError.resourceNotFound(
+        `User with uid ${userUid} doesn't exists`
       );
-      return;
     }
 
     if (mongooseUser.role != role) {
-      next(apiError.forbiddenError(`You need to be a ${role} to access`));
-      return;
+      return apiError.forbiddenError(`You need to be a ${role} to access`);
     }
-
-    res.status(200).json({});
   } catch (error) {
     console.log(error);
     if (firebaseError.isAFirebaseError(error)) {
-      next(firebaseError.handleError(error, apiError));
-      return;
+      return firebaseError.handleError(error, apiError);
     }
 
-    next(apiError.internalError(error));
+    return apiError.internalError(error);
+  }
+};
+
+const validateAuth = async (req, res, next) => {
+  const { token, role } = req.body;
+  const error = await validateTokenAndRole(token, role);
+
+  if (error) {
+    next(error);
     return;
   }
+
+  res.status(200).json({});
+};
+
+const validateAdmin = async (req, res, next) => {
+  const { token } = req.body;
+  const role = "Admin"; // TODO create enum or abstraction for role
+
+  const error = await validateTokenAndRole(token, role);
+
+  if (error) {
+    next(error);
+    return;
+  }
+
+  res.status.json({});
 };
 
 module.exports = {
   createUserWithEmailAndPassword,
   createUserWithProvider,
   validateAuth,
+  validateAdmin,
 };
