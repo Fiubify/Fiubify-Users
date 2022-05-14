@@ -115,7 +115,7 @@ const validateAdmin = async (req, res, next) => {
     return;
   }
 
-  res.status.json({});
+  res.status(200).json({});
 };
 
 module.exports = {
