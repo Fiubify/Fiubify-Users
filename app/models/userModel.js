@@ -21,6 +21,23 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  name: {
+    required: false,
+    type: String,
+  },
+  surname: {
+    required: false,
+    type: String,
+  },
+  birthdate: {
+    required: false,
+    type: Date,
+  },
+  plan: {
+    type: String,
+    enum: ['Free'],
+    default: 'Free'
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);
