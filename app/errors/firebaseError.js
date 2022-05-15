@@ -1,8 +1,8 @@
 class FirebaseAuthErrorHandler {
   static isAFirebaseError(errorJson) {
-    if ('errorInfo' in errorJson) {
+    if ("errorInfo" in errorJson) {
       const errorInfo = errorJson.errorInfo;
-      if ('code' in errorInfo && 'message' in errorInfo) {
+      if ("code" in errorInfo && "message" in errorInfo) {
         return true;
       }
     }
@@ -11,19 +11,19 @@ class FirebaseAuthErrorHandler {
   }
 
   static handleError(errorJson, errorClass) {
-    const errorCode = errorJson.code;
+    const errorCode = errorJson.errorInfo.code;
 
-    if (errorCode === 'auth/email-already-exists') {
+    if (errorCode === "auth/email-already-exists") {
       return new errorClass(400, errorJson.message);
-    } else if (errorCode === 'auth/internal-error') {
-      return new errorClass(500, 'Internal error');
+    } else if (errorCode === "auth/internal-error") {
+      return new errorClass(500, "Internal error");
     } else if (
-      errorCode === 'auth/invalid-email' ||
-      errorCode === 'auth/invalid-password'
+      errorCode === "auth/invalid-email" ||
+      errorCode === "auth/invalid-password"
     ) {
       return new errorClass(400, errorJson.message);
-    } else if (errorCode === 'auth/invalid-id-token') {
-      return new errorClass(401, 'Invalid token');
+    } else if (errorCode === "auth/invalid-id-token") {
+      return new errorClass(401, "Invalid token");
     } else {
       return new errorClass(500, errorJson.message);
     }
