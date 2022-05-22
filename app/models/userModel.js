@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   uid: {
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   role: {
     required: true,
     type: String,
-    enum: ['Listener', 'Artist', 'Admin'],
+    enum: ["Listener", "Artist", "Admin"],
   },
   disabled: {
     required: false,
@@ -35,9 +35,9 @@ const userSchema = new mongoose.Schema({
   },
   plan: {
     type: String,
-    enum: ['Free'],
-    default: 'Free'
-  }
+    enum: ["Free", "Premium"],
+    default: "Free",
+  },
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
