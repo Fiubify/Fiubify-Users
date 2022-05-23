@@ -3,7 +3,10 @@ const User = require("../models/userModel");
 
 const apiError = require("../errors/apiError");
 const firebaseError = require("../errors/firebaseError");
-const { validateTokenAndRole } = require("../utils/tokenValidations");
+const {
+  validateTokenAndRole,
+  validateUserId,
+} = require("../utils/tokenValidations");
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
   const { email, password, role, name, surname, birthdate, plan } = req.body;
@@ -95,9 +98,23 @@ const validateAdmin = async (req, res, next) => {
   res.status(200).json({});
 };
 
+const validateUserWithToken = async (req, res, next) => {
+  const { token, userId } = req.body;
+
+  const error = validateUserId(token, userId);
+
+  if (error) {
+    next(error);
+    return;
+  }
+
+  res.status(200).json({});
+};
+
 module.exports = {
   createUserWithEmailAndPassword,
   createUserWithProvider,
   validateAuth,
   validateAdmin,
+  validateUserWithToken,
 };
