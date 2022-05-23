@@ -33,3 +33,8 @@ const protectUrlByUser = async (req, res, next) => {
     next();
   }
 };
+
+module.exports = {
+  protectUrlByUser,
+  protectUrlByRole,
+};
