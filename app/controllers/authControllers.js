@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 
 const apiError = require("../errors/apiError");
 const firebaseError = require("../errors/firebaseError");
+const { validateTokenAndRole } = require("../utils/tokenValidations");
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
   const { email, password, role, name, surname, birthdate, plan } = req.body;
@@ -65,34 +66,6 @@ const createUserWithProvider = async (req, res, next) => {
     //TODO handle mongoose errors
     next(apiError.invalidArguments("Invalid arguments passed"));
     return;
-  }
-};
-
-const validateTokenAndRole = async (token, role) => {
-  try {
-    const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
-    const userUid = firebaseUser.uid.toString();
-
-    const mongooseUser = await User.findOne({
-      uid: userUid,
-    });
-
-    if (mongooseUser === null) {
-      return apiError.resourceNotFound(
-        `User with uid ${userUid} doesn't exists`
-      );
-    }
-
-    if (mongooseUser.role != role) {
-      return apiError.forbiddenError(`You need to be a ${role} to access`);
-    }
-  } catch (error) {
-    console.log(error);
-    if (firebaseError.isAFirebaseError(error)) {
-      return firebaseError.handleError(error, apiError);
-    }
-
-    return apiError.internalError(error);
   }
 };
 
