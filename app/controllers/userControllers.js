@@ -1,16 +1,37 @@
 const firebaseAuth = require("../services/firebase").auth;
 const User = require("../models/userModel");
 const apiError = require("../errors/apiError");
+const QueryParser = require("../utils/QueryParser");
 
 const getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.find().all();
+  const queryParams = [];
+  const queryParamsContained = ['name'];
+  const queryParser = new QueryParser(queryParams, queryParamsContained);
 
-    res.status(200).json({ data: { users: users } });
-  } catch (e) {
-    next(apiError.internalError("Internal error"));
-    return;
+  const query = queryParser.parseRequest(req);
+
+  try {
+    const users = await User.find(query).all();
+
+    if (!users.length && Object.keys(query).length !== 0) {
+      const message = queryParser.getErrorMessageNotFound(req)
+      next(apiError.resourceNotFound(message));
+    } else {
+      res.status(200).json({
+        data: users,
+      });
+    }
+  } catch (err) {
+    next(apiError.internalError("Internal error when getting songs"));
   }
+
+  // try {
+  //   const users = await User.find(query).all();
+  //   res.status(200).json({ data: { users: users } });
+  // } catch (e) {
+  //   next(apiError.internalError("Internal error"));
+  //   return;
+  // }
 };
 
 const getUser = async (req, res, next) => {
