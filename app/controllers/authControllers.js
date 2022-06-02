@@ -3,6 +3,11 @@ const User = require("../models/userModel");
 
 const apiError = require("../errors/apiError");
 const firebaseError = require("../errors/firebaseError");
+const {
+  validateTokenAndRole,
+  validateUserId,
+  validateMultipleUsersId,
+} = require("../utils/tokenValidations");
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
   const { email, password, role, name, surname, birthdate, plan } = req.body;
@@ -68,34 +73,6 @@ const createUserWithProvider = async (req, res, next) => {
   }
 };
 
-const validateTokenAndRole = async (token, role) => {
-  try {
-    const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
-    const userUid = firebaseUser.uid.toString();
-
-    const mongooseUser = await User.findOne({
-      uid: userUid,
-    });
-
-    if (mongooseUser === null) {
-      return apiError.resourceNotFound(
-        `User with uid ${userUid} doesn't exists`
-      );
-    }
-
-    if (mongooseUser.role != role) {
-      return apiError.forbiddenError(`You need to be a ${role} to access`);
-    }
-  } catch (error) {
-    console.log(error);
-    if (firebaseError.isAFirebaseError(error)) {
-      return firebaseError.handleError(error, apiError);
-    }
-
-    return apiError.internalError(error);
-  }
-};
-
 const validateAuth = async (req, res, next) => {
   const { token, role } = req.body;
   const error = await validateTokenAndRole(token, role);
@@ -122,9 +99,37 @@ const validateAdmin = async (req, res, next) => {
   res.status(200).json({});
 };
 
+const validateUserWithToken = async (req, res, next) => {
+  const { token, userId } = req.body;
+
+  const error = validateUserId(token, userId);
+
+  if (error) {
+    next(error);
+    return;
+  }
+
+  res.status(200).json({});
+};
+
+const validateUsersWithToken = async (req, res, next) => {
+  const { token, usersId } = req.body;
+
+  const error = validateMultipleUsersId(token, usersId);
+
+  if (error) {
+    next(error);
+    return;
+  }
+
+  res.status(200).json({});
+};
+
 module.exports = {
   createUserWithEmailAndPassword,
   createUserWithProvider,
   validateAuth,
   validateAdmin,
+  validateUserWithToken,
+  validateUsersWithToken,
 };
