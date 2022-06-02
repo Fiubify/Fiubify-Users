@@ -2,10 +2,16 @@ const {
   validateTokenAndRole,
   validateUserId,
 } = require("../utils/tokenValidations");
+const ApiError = require("../errors/apiError");
 
 const protectUrlByRole = (role) => {
   const callback = async (req, res, next) => {
     const token = req.body.token;
+
+    if (!token) {
+      ApiError.badRequest("No token was passed").constructResponse(res);
+      return;
+    }
 
     const error = await validateTokenAndRole(token, role);
 
@@ -23,6 +29,11 @@ const protectUrlByRole = (role) => {
 const protectUrlByUser = async (req, res, next) => {
   const token = req.body.token;
   const userId = req.params.id;
+
+  if (!token) {
+    ApiError.badRequest("No token was passed").constructResponse(res);
+    return;
+  }
 
   const error = await validateUserId(token, userId);
 
