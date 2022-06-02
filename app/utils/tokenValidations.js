@@ -15,7 +15,7 @@ const findUserUsingFirebaseToken = async (token) => {
 
 const validateTokenAndRole = async (token, role) => {
   try {
-    const mongooseUser = findUserUsingFirebaseToken(token);
+    const mongooseUser = await findUserUsingFirebaseToken(token);
 
     if (mongooseUser === null) {
       return apiError.resourceNotFound(`User with passed token doesn't exists`);
@@ -36,7 +36,7 @@ const validateTokenAndRole = async (token, role) => {
 
 const validateUserId = async (token, userId) => {
   try {
-    const mongooseUser = findUserUsingFirebaseToken(token);
+    const mongooseUser = await findUserUsingFirebaseToken(token);
 
     if (mongooseUser === null) {
       return apiError.resourceNotFound(`User with passed token doesn't exists`);
@@ -58,8 +58,9 @@ const validateUserId = async (token, userId) => {
 };
 
 const validateMultipleUsersId = async (token, arrayOfUsersId) => {
-  const trueOrFalseArray = arrayOfUsersId.map((id) => {
-    if (validateUserId(token, id)) {
+  const trueOrFalseArray = arrayOfUsersId.map(async (id) => {
+    const result = await validateUserId(token, id);
+    if (result) {
       return false;
     }
 

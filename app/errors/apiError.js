@@ -8,6 +8,10 @@ class ApiError {
     return new ApiError(404, msg);
   }
 
+  static badRequest(msg) {
+    return new ApiError(400, msg);
+  }
+
   static invalidArguments(msg) {
     return new ApiError(400, msg);
   }
@@ -30,6 +34,10 @@ class ApiError {
         msg: this.message,
       },
     };
+  }
+
+  constructResponse(res) {
+    res.status(this.code).json(this.toJson());
   }
 }
 
