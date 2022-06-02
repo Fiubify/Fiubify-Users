@@ -6,6 +6,7 @@ const firebaseError = require("../errors/firebaseError");
 const {
   validateTokenAndRole,
   validateUserId,
+  validateMultipleUsersId,
 } = require("../utils/tokenValidations");
 
 const createUserWithEmailAndPassword = async (req, res, next) => {
@@ -111,10 +112,24 @@ const validateUserWithToken = async (req, res, next) => {
   res.status(200).json({});
 };
 
+const validateUsersWithToken = async (req, res, next) => {
+  const { token, usersId } = req.body;
+
+  const error = validateMultipleUsersId(token, usersId);
+
+  if (error) {
+    next(error);
+    return;
+  }
+
+  res.status(200).json({});
+};
+
 module.exports = {
   createUserWithEmailAndPassword,
   createUserWithProvider,
   validateAuth,
   validateAdmin,
   validateUserWithToken,
+  validateUsersWithToken,
 };

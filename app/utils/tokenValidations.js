@@ -57,7 +57,26 @@ const validateUserId = async (token, userId) => {
   }
 };
 
+const validateMultipleUsersId = async (token, arrayOfUsersId) => {
+  const trueOrFalseArray = arrayOfUsersId.map((id) => {
+    if (validateUserId(token, id)) {
+      return false;
+    }
+
+    return true;
+  });
+
+  if (trueOrFalseArray.all((boolean) => boolean === false)) {
+    return apiError.forbiddenError(
+      `Users with id ${arrayOfUsersId.join(
+        ","
+      )} doesn't have access to this resource`
+    );
+  }
+};
+
 module.exports = {
   validateTokenAndRole,
   validateUserId,
+  validateMultipleUsersId,
 };
