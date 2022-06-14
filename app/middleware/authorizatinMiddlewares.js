@@ -19,7 +19,7 @@ const protectUrlByRole = (role) => {
       res.status(error.code).json(error.toJson());
       return;
     } else {
-      next();
+      return next();
     }
   };
 
@@ -41,7 +41,7 @@ const protectUrlByUser = async (req, res, next) => {
     res.status(error.code).json(error.toJson());
     return;
   } else {
-    next();
+    return next();
   }
 };
 
