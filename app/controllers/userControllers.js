@@ -4,7 +4,7 @@ const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
 
 const getAllUsers = async (req, res, next) => {
-  const queryParams = [];
+  const queryParams = ['role'];
   const queryParamsContained = ["name"];
   const queryParser = new QueryParser(queryParams, queryParamsContained);
 
