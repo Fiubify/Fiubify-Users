@@ -2,4 +2,4 @@ services:
   node-app:
     command: "npm test"
     environment:
-      - NODE_ENV=TEST
+      - NODE_ENV=DEV
