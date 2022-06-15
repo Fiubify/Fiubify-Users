@@ -115,10 +115,24 @@ describe("GET /user/", () => {
         expect(response3.body.data).toHaveLength(3);
     });
 
-    it("Check if returns everything if no filter is supplied", async () => {
+    it("Check if returns everything when no filter is supplied", async () => {
         const response = await request(app).get("/user/");
 
         expect(response.status).toEqual(200);
         expect(response.body.data).toHaveLength(5);
     })
+});
+
+describe("GET /user/:uid", () => {
+   it("Check if it returns the user correctly", async () => {
+       const response = await request(app).get("/user/8723498573nwf");
+
+       expect(response.status).toEqual(200);
+       expect(response.body.data.name).toEqual(testingUsers[0].name);
+   });
+
+    it("Check error when passing non existen uid", async () => {
+        const response = await request(app).get(`/user/527f1f77bcf86cd799439012`)
+        expect(response.status).toEqual(404);
+    });
 });
