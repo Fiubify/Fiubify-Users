@@ -36,9 +36,7 @@ const getUser = async (req, res, next) => {
     const user = await User.findOne({ uid: userId });
     if (!user) next(apiError.resourceNotFound("No se encontró el usuario"));
 
-    res.status(200).json({
-      data: user,
-    });
+    res.status(200).json(user);
   } catch (e) {
     next(apiError.internalError("Internal error"));
     return;
