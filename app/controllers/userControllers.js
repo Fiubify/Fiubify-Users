@@ -26,14 +26,6 @@ const getAllUsers = async (req, res, next) => {
     next(apiError.internalError("Internal error when getting songs"));
     return;
   }
-
-  // try {
-  //   const users = await User.find(query).all();
-  //   res.status(200).json({ data: { users: users } });
-  // } catch (e) {
-  //   next(apiError.internalError("Internal error"));
-  //   return;
-  // }
 };
 
 const getUser = async (req, res, next) => {
@@ -44,7 +36,9 @@ const getUser = async (req, res, next) => {
     const user = await User.findOne({ uid: userId });
     if (!user) next(apiError.resourceNotFound("No se encontró el usuario"));
 
-    res.status(200).json(user);
+    res.status(200).json({
+      data: user,
+    });
   } catch (e) {
     next(apiError.internalError("Internal error"));
     return;
