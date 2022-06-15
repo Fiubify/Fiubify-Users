@@ -128,7 +128,7 @@ describe("GET /user/:uid", () => {
        const response = await request(app).get("/user/8723498573nwf");
 
        expect(response.status).toEqual(200);
-       expect(response.body.data.name).toEqual(testingUsers[0].name);
+       expect(response.body.name).toEqual(testingUsers[0].name);
    });
 
     it("Check error when passing non existen uid", async () => {
