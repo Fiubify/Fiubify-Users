@@ -1,7 +1,13 @@
 const axios = require("axios")
 
 const createUserWallet = async () => {
-  const response = await axios.post("https://fiubify-payments-staging.herokuapp.com/wallets/", {})
+  try {
+    const response = await axios.post("https://fiubify-payments-staging.herokuapp.com/wallets/", {})
+  } catch (error) {
+    console.log(error)
+    return
+  }
+
   return response.data.address
 }
 
