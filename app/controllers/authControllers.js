@@ -1,4 +1,5 @@
 const firebaseAuth = require("../services/firebase").auth;
+const createUserWallet = require("../services/firebase").auth;
 const User = require("../models/userModel");
 
 const apiError = require("../errors/apiError");
@@ -19,6 +20,8 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       disabled: false,
     });
 
+    let userWalletAddress = createUserWallet()
+
     const newUser = new User({
       uid: createdUser.uid,
       email: email,
@@ -27,6 +30,7 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       surname: surname,
       birthdate: birthdate,
       plan: plan,
+      walletAddress: userWalletAddress,
     });
 
     const mongoCreatedUser = await newUser.save();

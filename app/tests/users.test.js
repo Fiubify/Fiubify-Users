@@ -23,6 +23,7 @@ const testingUsers = [
         surname: "Apellido 1",
         birthdate: null,
         plan: "Free",
+        walletAddress: '0xC216dB1b18B44Cb157CF116e1e0cD2b785f54564',
     },
     {
         uid: "8723fw98573nwf",
@@ -33,6 +34,7 @@ const testingUsers = [
         surname: "Apellido 2",
         birthdate: null,
         plan: "Premium",
+        walletAddress: '0xC216dB1b18B44Cb157CF116e1e0cD2b785f54565',
     },
     {
         uid: "87233d221573nwf",
@@ -43,6 +45,7 @@ const testingUsers = [
         surname: "Apellido 3",
         birthdate: null,
         plan: "Free",
+        walletAddress: '0xC216dB1b18B44Cb157CF116e1e0cD2b785f54566',
     },
     {
         uid: "87237999998573nwf",
@@ -53,6 +56,7 @@ const testingUsers = [
         surname: "Apellido 4",
         birthdate: null,
         plan: "Premium",
+        walletAddress: '0xC216dB1b18B44Cb157CF116e1e0cD2b785f54567',
     },
     {
         uid: "872kks98573nwf",
@@ -63,12 +67,13 @@ const testingUsers = [
         surname: "Apellido 5",
         birthdate: null,
         plan: "Free",
+        walletAddress: '0xC216dB1b18B44Cb157CF116e1e0cD2b785f54568',
     },
 ]
 
 let testingUsersId = []
 
-const createTestingSongs = async (users) => {
+const createTestingUsers = async (users) => {
     for (const user of users) {
         const newUser = new User(user);
         await newUser.save();
@@ -84,7 +89,7 @@ beforeAll(async () => {
 beforeEach(async () => {
     await testingDb.dropTestDbCollections();
     testingUsersId = [];
-    await createTestingSongs(testingUsers);
+    await createTestingUsers(testingUsers);
 });
 
 afterAll(async () => {

@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema({
     enum: ["Free", "Premium"],
     default: "Free",
   },
+  walletAddress: {
+    type: String,
+    required: true,
+    unique: true
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);
