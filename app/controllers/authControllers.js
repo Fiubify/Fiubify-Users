@@ -1,5 +1,5 @@
 const firebaseAuth = require("../services/firebase").auth;
-const createUserWallet = require("../services/payments");
+const {createUserWallet} = require("../services/payments");
 const User = require("../models/userModel");
 
 const apiError = require("../errors/apiError");
