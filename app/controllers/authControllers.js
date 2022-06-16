@@ -20,7 +20,7 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       disabled: false,
     });
 
-    userWalletAddress = createUserWallet()
+    let userWalletAddress = createUserWallet()
 
     const newUser = new User({
       uid: createdUser.uid,
