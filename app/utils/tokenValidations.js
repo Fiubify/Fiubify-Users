@@ -42,9 +42,9 @@ const validateUserId = async (token, userId) => {
       return apiError.resourceNotFound(`User with passed token doesn't exists`);
     }
 
-    if (mongooseUser.id !== userId) {
+    if (mongooseUser.uid !== userId) {
       return apiError.forbiddenError(
-        `User with id ${mongooseUser.id} doesn't have access to this resource`
+        `User with uid ${mongooseUser.uid} doesn't have access to this resource`
       );
     }
   } catch (error) {

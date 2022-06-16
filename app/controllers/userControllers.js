@@ -4,8 +4,8 @@ const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
 
 const getAllUsers = async (req, res, next) => {
-  const queryParams = [];
-  const queryParamsContained = ['name'];
+  const queryParams = ['role'];
+  const queryParamsContained = ["name"];
   const queryParser = new QueryParser(queryParams, queryParamsContained);
 
   const query = queryParser.parseRequest(req);
@@ -14,8 +14,9 @@ const getAllUsers = async (req, res, next) => {
     const users = await User.find(query).all();
 
     if (!users.length && Object.keys(query).length !== 0) {
-      const message = queryParser.getErrorMessageNotFound(req)
+      const message = queryParser.getErrorMessageNotFound(req);
       next(apiError.resourceNotFound(message));
+      return;
     } else {
       res.status(200).json({
         data: users,
@@ -23,15 +24,8 @@ const getAllUsers = async (req, res, next) => {
     }
   } catch (err) {
     next(apiError.internalError("Internal error when getting songs"));
+    return;
   }
-
-  // try {
-  //   const users = await User.find(query).all();
-  //   res.status(200).json({ data: { users: users } });
-  // } catch (e) {
-  //   next(apiError.internalError("Internal error"));
-  //   return;
-  // }
 };
 
 const getUser = async (req, res, next) => {
@@ -45,6 +39,7 @@ const getUser = async (req, res, next) => {
     res.status(200).json(user);
   } catch (e) {
     next(apiError.internalError("Internal error"));
+    return;
   }
 };
 
