@@ -5,6 +5,4 @@ const createUserWallet = async () => {
   return response.data.address
 }
 
-module.exports = {
-  createUserWallet
-}
+module.exports = createUserWallet
