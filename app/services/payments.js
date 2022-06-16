@@ -9,8 +9,7 @@ const createUserWallet = async () => {
     return
   }
 
-  console.log(response.data)
-  return response.data.address
+  return response.data.data.address
 }
 
 module.exports = {createUserWallet}
