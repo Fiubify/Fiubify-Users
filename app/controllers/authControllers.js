@@ -1,10 +1,11 @@
 const firebaseAuth = require("../services/firebase").auth;
-const {createUserWallet} = require("../services/payments");
+const { createUserWallet } = require("../services/payments");
 const User = require("../models/userModel");
 
 const apiError = require("../errors/apiError");
 const firebaseError = require("../errors/firebaseError");
 const {
+  validateUidWithFirebaseToken,
   validateTokenAndRole,
   validateUserId,
   validateMultipleUsersId,
@@ -20,7 +21,7 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       disabled: false,
     });
 
-    let userWalletAddress = await createUserWallet()
+    let userWalletAddress = await createUserWallet();
 
     const newUser = new User({
       uid: createdUser.uid,
@@ -75,6 +76,18 @@ const createUserWithProvider = async (req, res, next) => {
     next(apiError.invalidArguments("Invalid arguments passed"));
     return;
   }
+};
+
+const validateUid = async (req, res, next) => {
+  const { uid, token } = req.body;
+  const error = await validateUidWithFirebaseToken(token, uid);
+
+  if (error) {
+    next(error);
+    return;
+  }
+
+  res.status(200).json({});
 };
 
 const validateAuth = async (req, res, next) => {
@@ -136,4 +149,5 @@ module.exports = {
   validateAdmin,
   validateUserWithToken,
   validateUsersWithToken,
+  validateUid,
 };

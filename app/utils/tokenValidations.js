@@ -3,6 +3,14 @@ const User = require("../models/userModel");
 const apiError = require("../errors/apiError");
 const firebaseError = require("../errors/firebaseError");
 
+const validateUidWithFirebaseToken = async (token, uid) => {
+  const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
+
+  if (uid !== firebaseUser.uid.toString()) {
+    return apiError.forbiddenError(`User token doesn't belong to sent uid`);
+  }
+};
+
 const findUserUsingFirebaseToken = async (token) => {
   const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
 
@@ -77,6 +85,7 @@ const validateMultipleUsersId = async (token, arrayOfUsersId) => {
 };
 
 module.exports = {
+  validateUidWithFirebaseToken,
   validateTokenAndRole,
   validateUserId,
   validateMultipleUsersId,
