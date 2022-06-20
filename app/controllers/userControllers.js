@@ -90,7 +90,7 @@ const changeUserSubscription = async (req, res, next) => {
   const userId = req.params.id;
   const subscriptionType = req.body.plan;
 
-  const userToChangeSubscription = await User.findById(userId);
+  const userToChangeSubscription = await User.findOne({ uid: userId });
   if (userToChangeSubscription === null) {
     next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
     return;
