@@ -118,10 +118,25 @@ const changeUserSubscription = async (req, res, next) => {
   }
 };
 
+const editProfile = async (req, res, next) => {
+  const userUId = req.params.uid
+
+  let requestedProfile = await User.findById(userUId)
+  if (!requestedProfile) {
+      next(ApiError.resourceNotFound(`User with uid ${userUId} doesn't exist`))
+      return
+  }
+
+  Object.assign(requestedProfile, req.body)
+  await requestedProfile.save()
+  res.status(204).send({})
+}
+
 module.exports = {
   getAllUsers,
   blockUser,
   unblockUser,
   getUser,
   changeUserSubscription,
+  editProfile
 };

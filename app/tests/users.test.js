@@ -141,3 +141,28 @@ describe("GET /user/:uid", () => {
         expect(response.status).toEqual(404);
     });
 });
+
+describe("PATCH /user/:id/edit", () => {
+
+    it("Successfully edits profile", async() => {
+        const request_body = {
+            email: "mail1editado@gmail.com",
+            role: "Artist",
+            name: "Nombre 1 editado",
+            surname: "Apellido 1 editado",
+            birthdate: "12/05/2000",
+        }
+
+        const response = await request(app).patch(`/user/${testingUsers[0]}/edit`)
+                                           .send(request_body)
+
+        const user = await User.findById(testingUsersId[0])
+
+        expect(response.status).toEqual(204)
+        expect(user.email).toEqual('mail1editado@gmail.com')
+        expect(user.role).toEqual('Artist')
+        expect(user.name).toEqual('Nombre 1 editado')
+        expect(user.surname).toEqual('Apellido 1 editado')
+        expect(user.birthdate).toEqual('12/05/2000')
+    })
+})

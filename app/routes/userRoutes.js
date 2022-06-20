@@ -24,5 +24,6 @@ router.patch(
   protectUrlByUser,
   userControllers.changeUserSubscription
 );
+router.patch("/:id/edit", protectUrlByUser, userControllers.editProfile)
 
 module.exports = router;
