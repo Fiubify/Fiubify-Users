@@ -153,10 +153,10 @@ describe("PATCH /user/:id/edit", () => {
             birthdate: "12/05/2000",
         }
 
-        const response = await request(app).patch(`/user/${testingUsers[0]}/edit`)
+        const response = await request(app).patch(`/user/8723498573nwf/edit`)
                                            .send(request_body)
 
-        const user = await User.findById(testingUsersId[0])
+        const user = testingUsers[0]
 
         expect(response.status).toEqual(204)
         expect(user.email).toEqual('mail1editado@gmail.com')

@@ -119,17 +119,27 @@ const changeUserSubscription = async (req, res, next) => {
 };
 
 const editProfile = async (req, res, next) => {
-  const userUId = req.params.uid
+  const userId = req.params.id;
 
-  let requestedProfile = await User.findById(userUId)
-  if (!requestedProfile) {
-      next(ApiError.resourceNotFound(`User with uid ${userUId} doesn't exist`))
-      return
+  const userToChangeProfile = await User.findOne({ uid: userId });
+  if (userToChangeProfile === null) {
+    next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
+    return;
   }
 
-  Object.assign(requestedProfile, req.body)
-  await requestedProfile.save()
-  res.status(204).send({})
+  try {
+    await userToChangeProfile.updateOne(req.body);
+
+    res.status(204).json({});
+  } catch (e) {
+    console.log(e);
+    next(
+      apiError.internalError(
+        "Internal error when trying to edit profile"
+      )
+    );
+    return;
+  }
 }
 
 module.exports = {
