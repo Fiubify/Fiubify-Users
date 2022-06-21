@@ -9,6 +9,7 @@ const {
 
 router.get("/", userControllers.getAllUsers);
 router.get("/:uid", userControllers.getUser);
+router.patch("/:uid", userControllers.editUserProfile);
 router.patch(
   "/block/:id",
   protectUrlByRole("Admin"),

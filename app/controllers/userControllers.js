@@ -4,7 +4,7 @@ const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
 
 const getAllUsers = async (req, res, next) => {
-  const queryParams = ['role'];
+  const queryParams = ["role"];
   const queryParamsContained = ["name"];
   const queryParser = new QueryParser(queryParams, queryParamsContained);
 
@@ -39,6 +39,30 @@ const getUser = async (req, res, next) => {
     res.status(200).json(user);
   } catch (e) {
     next(apiError.internalError("Internal error"));
+    return;
+  }
+};
+
+const editUserProfile = async (req, res, next) => {
+  try {
+    const userId = req.params.uid;
+    const { name, surname, birthdate } = req.body;
+
+    if (!userId) next(apiError.resourceNotFound("No hay uid"));
+    const user = await User.findOne({ uid: userId });
+    if (!user) next(apiError.resourceNotFound("No se encontró el usuario"));
+
+    Object.assign(user, { name, surname, birthdate });
+    await user.save();
+
+    res.status(204).json();
+  } catch (e) {
+    console.log(e);
+    next(
+      apiError.internalError(
+        "Internal error when trying to update user information"
+      )
+    );
     return;
   }
 };
@@ -122,6 +146,7 @@ module.exports = {
   getAllUsers,
   blockUser,
   unblockUser,
+  editUserProfile,
   getUser,
   changeUserSubscription,
 };
