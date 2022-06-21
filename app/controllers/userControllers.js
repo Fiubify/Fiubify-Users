@@ -117,7 +117,7 @@ const unblockUser = async (req, res, next) => {
 };
 
 const changeUserSubscription = async (req, res, next) => {
-  const userId = req.params.id;
+  const userId = req.params.uid;
   const subscriptionType = req.body.plan;
 
   const userToChangeSubscription = await User.findOne({ uid: userId });
