@@ -9,6 +9,17 @@ const {
 
 router.get("/", userControllers.getAllUsers);
 router.get("/:uid", userControllers.getUser);
+
+if (process.env.NODE_ENV === "DEV") {
+  router.patch("/:uid", userControllers.editUserProfile);
+} else {
+  router.patch("/:uid", protectUrlByUser, userControllers.editUserProfile);
+}
+router.patch(
+  "/:uid/change-subscription",
+  protectUrlByUser,
+  userControllers.changeUserSubscription
+);
 router.patch(
   "/block/:id",
   protectUrlByRole("Admin"),
@@ -18,11 +29,6 @@ router.patch(
   "/unblock/:id",
   protectUrlByRole("Admin"),
   userControllers.unblockUser
-);
-router.patch(
-  "/:id/change-subscription",
-  protectUrlByUser,
-  userControllers.changeUserSubscription
 );
 
 module.exports = router;

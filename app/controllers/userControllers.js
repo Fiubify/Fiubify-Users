@@ -4,7 +4,7 @@ const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
 
 const getAllUsers = async (req, res, next) => {
-  const queryParams = ['role'];
+  const queryParams = ["role"];
   const queryParamsContained = ["name"];
   const queryParser = new QueryParser(queryParams, queryParamsContained);
 
@@ -32,13 +32,42 @@ const getUser = async (req, res, next) => {
   try {
     const userId = req.params.uid;
 
-    if (!userId) next(apiError.resourceNotFound("No hay uid"));
+    if (!userId) next(apiError.invalidArguments("No uid was passed"));
     const user = await User.findOne({ uid: userId });
-    if (!user) next(apiError.resourceNotFound("No se encontró el usuario"));
+    if (!user)
+      next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
 
     res.status(200).json(user);
   } catch (e) {
-    next(apiError.internalError("Internal error"));
+    next(
+      apiError.internalError(
+        "Internal error when trying to get users information"
+      )
+    );
+    return;
+  }
+};
+
+const editUserProfile = async (req, res, next) => {
+  try {
+    const userId = req.params.uid;
+
+    if (!userId) next(apiError.invalidArguments("No uid was passed"));
+    const user = await User.findOne({ uid: userId });
+    if (!user)
+      next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
+
+    Object.assign(user, req.body);
+    await user.save();
+
+    res.status(204).json();
+  } catch (e) {
+    console.log(e);
+    next(
+      apiError.internalError(
+        "Internal error when trying to update user information"
+      )
+    );
     return;
   }
 };
@@ -87,7 +116,7 @@ const unblockUser = async (req, res, next) => {
 };
 
 const changeUserSubscription = async (req, res, next) => {
-  const userId = req.params.id;
+  const userId = req.params.uid;
   const subscriptionType = req.body.plan;
 
   const userToChangeSubscription = await User.findOne({ uid: userId });
@@ -122,6 +151,7 @@ module.exports = {
   getAllUsers,
   blockUser,
   unblockUser,
+  editUserProfile,
   getUser,
   changeUserSubscription,
 };
