@@ -51,14 +51,13 @@ const getUser = async (req, res, next) => {
 const editUserProfile = async (req, res, next) => {
   try {
     const userId = req.params.uid;
-    const { name, surname, birthdate } = req.body;
 
     if (!userId) next(apiError.invalidArguments("No uid was passed"));
     const user = await User.findOne({ uid: userId });
     if (!user)
       next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
 
-    Object.assign(user, { name, surname, birthdate });
+    Object.assign(user, req.body);
     await user.save();
 
     res.status(204).json();

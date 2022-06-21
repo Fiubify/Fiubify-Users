@@ -9,7 +9,12 @@ const {
 
 router.get("/", userControllers.getAllUsers);
 router.get("/:uid", userControllers.getUser);
-router.patch("/:uid", protectUrlByUser, userControllers.editUserProfile);
+
+if (process.env.NODE_ENV === "DEV") {
+  router.patch("/:uid", userControllers.editUserProfile);
+} else {
+  router.patch("/:uid", protectUrlByUser, userControllers.editUserProfile);
+}
 router.patch(
   "/:uid/change-subscription",
   protectUrlByUser,
