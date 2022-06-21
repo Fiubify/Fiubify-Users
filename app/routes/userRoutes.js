@@ -9,7 +9,7 @@ const {
 
 router.get("/", userControllers.getAllUsers);
 router.get("/:uid", userControllers.getUser);
-router.patch("/:uid", userControllers.editUserProfile);
+router.patch("/:uid", protectUrlByUser, userControllers.editUserProfile);
 router.patch(
   "/:uid/change-subscription",
   protectUrlByUser,
