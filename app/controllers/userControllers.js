@@ -32,13 +32,18 @@ const getUser = async (req, res, next) => {
   try {
     const userId = req.params.uid;
 
-    if (!userId) next(apiError.resourceNotFound("No hay uid"));
+    if (!userId) next(apiError.invalidArguments("No uid was passed"));
     const user = await User.findOne({ uid: userId });
-    if (!user) next(apiError.resourceNotFound("No se encontró el usuario"));
+    if (!user)
+      next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
 
     res.status(200).json(user);
   } catch (e) {
-    next(apiError.internalError("Internal error"));
+    next(
+      apiError.internalError(
+        "Internal error when trying to get users information"
+      )
+    );
     return;
   }
 };
@@ -48,9 +53,10 @@ const editUserProfile = async (req, res, next) => {
     const userId = req.params.uid;
     const { name, surname, birthdate } = req.body;
 
-    if (!userId) next(apiError.resourceNotFound("No hay uid"));
+    if (!userId) next(apiError.invalidArguments("No uid was passed"));
     const user = await User.findOne({ uid: userId });
-    if (!user) next(apiError.resourceNotFound("No se encontró el usuario"));
+    if (!user)
+      next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
 
     Object.assign(user, { name, surname, birthdate });
     await user.save();
