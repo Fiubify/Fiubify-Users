@@ -74,7 +74,7 @@ const createUserWithProvider = async (req, res, next) => {
 
     res
       .status(201)
-      .json({ data: { uid: createdUser.uid, id: mongoCreatedUser.id } });
+      .json({ data: { uid: uid, id: mongoCreatedUser.id } });
   } catch (error) {
     console.log(error);
     //TODO handle mongoose errors
