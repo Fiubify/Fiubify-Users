@@ -11,6 +11,7 @@ const validateUidWithFirebaseToken = async (token, uid) => {
       return apiError.forbiddenError(`User token doesn't belong to sent uid`);
     }
   } catch (e) {
+    console.log(e);
     return apiError.invalidArguments(`No valid uid`);
   }
 };
