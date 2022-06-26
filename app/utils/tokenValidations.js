@@ -5,6 +5,7 @@ const firebaseError = require("../errors/firebaseError");
 
 const validateUidWithFirebaseToken = async (token, uid) => {
   try {
+    console.log(token);
     const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
 
     if (uid !== firebaseUser.uid.toString()) {
