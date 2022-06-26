@@ -74,7 +74,6 @@ const createUserWithProvider = async (req, res, next) => {
     res.status(201).json({ data: { uid: uid, id: mongoCreatedUser.id } });
   } catch (error) {
     console.log(error);
-    //TODO handle mongoose errors
     next(apiError.invalidArguments("Invalid arguments passed"));
     return;
   }
