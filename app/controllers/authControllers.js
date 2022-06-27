@@ -53,26 +53,27 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
 };
 
 const createUserWithProvider = async (req, res, next) => {
-  const { email, role, uid } = req.body;
+  const { email, uid, role, name, surname, birthdate, plan } = req.body;
 
   try {
+    let userWalletAddress = await createUserWallet();
+
     const newUser = new User({
       uid: uid,
       email: email,
       role: role,
+      name: name,
+      surname: surname,
+      birthdate: birthdate,
+      plan: plan,
+      walletAddress: userWalletAddress,
     });
 
-    const createdUser = await newUser.save();
+    const mongoCreatedUser = await newUser.save();
 
-    //TODO validate result data
-    res.status(201).json({ data: { uid: uid, id: createdUser.id } });
+    res.status(201).json({ data: { uid: uid, id: mongoCreatedUser.id } });
   } catch (error) {
     console.log(error);
-    if (firebaseError.isAFirebaseError(error)) {
-      next(firebaseError.handleError(error, apiError));
-      return;
-    }
-    //TODO handle mongoose errors
     next(apiError.invalidArguments("Invalid arguments passed"));
     return;
   }
@@ -80,6 +81,7 @@ const createUserWithProvider = async (req, res, next) => {
 
 const validateUid = async (req, res, next) => {
   const { uid, token } = req.body;
+  console.log(req.body);
   const error = await validateUidWithFirebaseToken(token, uid);
 
   if (error) {
