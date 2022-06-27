@@ -111,6 +111,16 @@ describe("GET /user/", () => {
     expect(response2.body.data).toHaveLength(1);
   });
 
+  it("Check if it filter by email", async () => {
+    const response = await request(app)
+        .get("/user/")
+        .query({ email: "mail3@gmail.com" });
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data).toHaveLength(1);
+    expect(response.body.data[0].email).toEqual("mail3@gmail.com");
+  });
+
   it("Check if it filter by name", async () => {
     const response = await request(app).get("/user/").query({ name: "Nombre" });
     const response2 = await request(app).get("/user/").query({ name: "Nom" });
