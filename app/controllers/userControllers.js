@@ -132,8 +132,6 @@ const upgradeUserSubscription = async (req, res, next) => {
 
   let user_wallet_balance = await getUserWalletBalance(user.walletAddress)
   if (user_wallet_balance >= premium_plan_cost) {
-
-  } else {
     try {
       await user.updateOne({plan: 'Premium'})
       res.status(204).json({})
@@ -145,7 +143,8 @@ const upgradeUserSubscription = async (req, res, next) => {
         )
       )
     }
-    return
+  } else {
+    next(apiError.invalidArguments("Insufficient funds"))
   }
 }
 
@@ -155,5 +154,5 @@ module.exports = {
   unblockUser,
   editUserProfile,
   getUser,
-  changeUserSubscription,
+  upgradeUserSubscription,
 };
