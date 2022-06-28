@@ -1,7 +1,11 @@
 const firebaseAuth = require("../services/firebase").auth;
+const { getUserWalletBalance } = require("../services/payments");
 const User = require("../models/userModel");
 const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
+
+const highest_plan_tier = 'Premium'
+const premium_plan_cost = 0.001
 
 const getAllUsers = async (req, res, next) => {
   const queryParams = ["role", "email"];
@@ -115,37 +119,34 @@ const unblockUser = async (req, res, next) => {
   }
 };
 
-const changeUserSubscription = async (req, res, next) => {
-  const userId = req.params.uid;
-  const subscriptionType = req.body.plan;
-
-  const userToChangeSubscription = await User.findOne({ uid: userId });
-  if (userToChangeSubscription === null) {
-    next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`));
+const upgradeUserSubscription = async (req, res, next) => {
+  const userId = req.params.uid
+  const user = await User.findOne({ uid: userId });
+  if (user === null) {
+    next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`))
     return;
+  } else if (user.plan === highest_plan_tier) {
+    next(apiError.invalidArguments(`User plan already ${highest_plan_tier}`))
+    return
   }
 
-  if (userToChangeSubscription.plan === subscriptionType) {
-    next(
-      apiError.invalidArguments(`User already have plan: ${subscriptionType}`)
-    );
-    return;
-  }
-
-  try {
-    await userToChangeSubscription.updateOne({ plan: subscriptionType });
-
-    res.status(204).json({});
-  } catch (e) {
-    console.log(e);
-    next(
-      apiError.internalError(
-        "Internal error when trying to change subscription plan"
+  let user_wallet_balance = await getUserWalletBalance(user.walletAddress)
+  if (user_wallet_balance >= premium_plan_cost) {
+    try {
+      await user.updateOne({plan: 'Premium'})
+      res.status(204).json({})
+    } catch (e) {
+      console.log(e)
+      next(
+        apiError.internalError(
+          "Internal error when trying to change subscription plan"
+        )
       )
-    );
-    return;
+    }
+  } else {
+    next(apiError.invalidArguments("Insufficient funds"))
   }
-};
+}
 
 module.exports = {
   getAllUsers,
@@ -153,5 +154,5 @@ module.exports = {
   unblockUser,
   editUserProfile,
   getUser,
-  changeUserSubscription,
+  upgradeUserSubscription,
 };

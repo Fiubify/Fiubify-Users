@@ -16,9 +16,9 @@ if (process.env.NODE_ENV === "DEV") {
   router.patch("/:uid", protectUrlByUser, userControllers.editUserProfile);
 }
 router.patch(
-  "/:uid/change-subscription",
+  "/:uid/upgrade-subscription",
   protectUrlByUser,
-  userControllers.changeUserSubscription
+  userControllers.upgradeUserSubscription
 );
 router.patch(
   "/block/:id",

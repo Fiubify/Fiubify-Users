@@ -12,4 +12,16 @@ const createUserWallet = async () => {
   return response.data.data.address
 }
 
-module.exports = {createUserWallet}
+const getUserWalletBalance = async (wallet_address) => {
+  var response
+  try {
+    response = await axios.get(`https://fiubify-payments-staging.herokuapp.com/wallet/${wallet_address}`)
+  } catch (error) {
+    console.log(`Error fetching wallet balance: ${error}`)
+    return
+  }
+
+  return response.data.data.balance
+}
+
+module.exports = {createUserWallet, getUserWalletBalance}
