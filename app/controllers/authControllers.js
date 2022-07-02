@@ -36,7 +36,6 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
 
     const mongoCreatedUser = await newUser.save();
 
-    //TODO validate result data
     res
       .status(201)
       .json({ data: { uid: createdUser.uid, id: mongoCreatedUser.id } });
@@ -46,7 +45,6 @@ const createUserWithEmailAndPassword = async (req, res, next) => {
       next(firebaseError.handleError(error, apiError));
       return;
     }
-    //TODO handle mongoose errors
     next(apiError.invalidArguments("Invalid arguments passed"));
     return;
   }
@@ -81,7 +79,6 @@ const createUserWithProvider = async (req, res, next) => {
 
 const validateUid = async (req, res, next) => {
   const { uid, token } = req.body;
-  console.log(req.body);
   const error = await validateUidWithFirebaseToken(token, uid);
 
   if (error) {
