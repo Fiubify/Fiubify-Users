@@ -1,6 +1,5 @@
 const {
   validateTokenAndRole,
-  validateUserId,
   validateUidWithFirebaseToken,
 } = require("../utils/tokenValidations");
 const ApiError = require("../errors/apiError");
