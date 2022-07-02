@@ -10,7 +10,7 @@ const validateUidWithFirebaseToken = async (token, uid) => {
     const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
     console.log(firebaseUser);
 
-    if (uid.toString() !== firebaseUser.uid.toString()) {
+    if (uid !== firebaseUser.uid.toString()) {
       return apiError.forbiddenError(`User token doesn't belong to sent uid`);
     }
   } catch (e) {

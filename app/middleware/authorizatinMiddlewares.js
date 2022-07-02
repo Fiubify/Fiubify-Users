@@ -28,7 +28,7 @@ const protectUrlByRole = (role) => {
 
 const protectUrlByUser = async (req, res, next) => {
   const token = req.body.token;
-  const userId = req.params.id;
+  const userId = req.params.uid;
 
   if (!token) {
     ApiError.badRequest("No token was passed").constructResponse(res);
