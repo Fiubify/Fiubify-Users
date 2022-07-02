@@ -1,6 +1,7 @@
 const {
   validateTokenAndRole,
   validateUserId,
+  validateUidWithFirebaseToken,
 } = require("../utils/tokenValidations");
 const ApiError = require("../errors/apiError");
 
@@ -35,7 +36,7 @@ const protectUrlByUser = async (req, res, next) => {
     return;
   }
 
-  const error = await validateUserId(token, userId);
+  const error = await validateUidWithFirebaseToken(token, userId);
 
   if (error) {
     res.status(error.code).json(error.toJson());
