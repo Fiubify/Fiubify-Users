@@ -24,4 +24,20 @@ const getUserWalletBalance = async (wallet_address) => {
   return response.data.data.balance
 }
 
-module.exports = {createUserWallet, getUserWalletBalance}
+const createTransaction = async (from_address, to_address, amount) => {
+  var response
+  try {
+    request = {
+      from_address: sender_address,
+      to_address: receiver_address,
+      amount: amount
+    }
+
+    response = await axios.post("https://fiubify-payments-staging.herokuapp.com/wallet/transaction", request)
+  } catch (error) {
+    console.log(`Error creating transaction: ${error}`)
+    return
+  }
+}
+
+module.exports = {createUserWallet, getUserWalletBalance, createTransaction}
