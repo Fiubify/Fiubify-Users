@@ -30,5 +30,10 @@ router.patch(
   protectUrlByRole("Admin"),
   userControllers.unblockUser
 );
+router.post(
+  "/donate",
+  protectUrlByUser,
+  userControllers.donateToUser
+)
 
 module.exports = router;

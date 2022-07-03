@@ -1,5 +1,5 @@
 const firebaseAuth = require("../services/firebase").auth;
-const { getUserWalletBalance } = require("../services/payments");
+const { getUserWalletBalance, createTransaction } = require("../services/payments");
 const User = require("../models/userModel");
 const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
@@ -148,6 +148,39 @@ const upgradeUserSubscription = async (req, res, next) => {
   }
 }
 
+const donateToUser = async (req, res, next) => {
+  const fromUserId = req.params.from_uid
+  const fromUser = await User.findOne({ uid: fromUserId })
+  if (fromUser === null) {
+    next(apiError.resourceNotFound(`User with id ${fromUserId} doesn't exists`))
+    return;
+  }
+
+  const toUserId = req.params.to_uid
+  const toUser = await User.findOne({ uid: toUserId })
+  if (toUser === null) {
+    next(apiError.resourceNotFound(`User with id ${toUserId} doesn't exists`))
+    return;
+  }
+
+  const amount = req.params.amount
+
+  try {
+    await createTransaction(fromUser.walletAddress,
+                            toUser.walletAddress,
+                            amount)
+
+    res.status(204).json({})
+  } catch (e) {
+    console.log(e)
+    next(
+      apiError.internalError(
+        "Internal error when trying to make donation"
+      )
+    )
+  }
+}
+
 module.exports = {
   getAllUsers,
   blockUser,
@@ -155,4 +188,5 @@ module.exports = {
   editUserProfile,
   getUser,
   upgradeUserSubscription,
+  donateToUser,
 };
