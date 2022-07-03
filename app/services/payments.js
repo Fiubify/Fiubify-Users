@@ -27,9 +27,9 @@ const getUserWalletBalance = async (wallet_address) => {
 const createTransaction = async (from_address, to_address, amount) => {
   var response
   try {
-    request = {
-      from_address: sender_address,
-      to_address: receiver_address,
+    const request = {
+      from_address: from_address,
+      to_address: sender_address,
       amount: amount
     }
 
@@ -38,6 +38,8 @@ const createTransaction = async (from_address, to_address, amount) => {
     console.log(`Error creating transaction: ${error}`)
     return
   }
+
+  return response.data
 }
 
 module.exports = {createUserWallet, getUserWalletBalance, createTransaction}
