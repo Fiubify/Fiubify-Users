@@ -29,7 +29,7 @@ const createTransaction = async (from_address, to_address, amount) => {
   try {
     const request = {
       from_address: from_address,
-      to_address: sender_address,
+      to_address: to_address,
       amount: amount
     }
 
