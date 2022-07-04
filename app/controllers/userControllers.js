@@ -149,21 +149,21 @@ const upgradeUserSubscription = async (req, res, next) => {
 }
 
 const donateToUser = async (req, res, next) => {
-  const fromUserId = req.params.from_uid
+  const fromUserId = req.body.from_uid
   const fromUser = await User.findOne({ uid: fromUserId })
   if (fromUser === null) {
     next(apiError.resourceNotFound(`User with id ${fromUserId} doesn't exists`))
     return;
   }
 
-  const toUserId = req.params.to_uid
+  const toUserId = req.body.to_uid
   const toUser = await User.findOne({ uid: toUserId })
   if (toUser === null) {
     next(apiError.resourceNotFound(`User with id ${toUserId} doesn't exists`))
     return;
   }
 
-  const amount = req.params.amount
+  const amount = req.body.amount
 
   try {
     await createTransaction(fromUser.walletAddress,
