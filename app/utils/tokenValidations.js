@@ -5,8 +5,10 @@ const firebaseError = require("../errors/firebaseError");
 
 const validateUidWithFirebaseToken = async (token, uid) => {
   try {
+    console.log(token);
     const firebaseUser = await firebaseAuth.verifyIdToken(token, true);
-
+    console.log(uid);
+    console.log(uid.toString());
     if (uid !== firebaseUser.uid.toString()) {
       return apiError.forbiddenError(`User token doesn't belong to sent uid`);
     }
