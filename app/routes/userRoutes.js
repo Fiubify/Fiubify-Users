@@ -31,7 +31,7 @@ router.patch(
   userControllers.unblockUser
 );
 router.post(
-  "/donate",
+  "/:donator_uid/donate",
   protectUrlByUser,
   userControllers.donateToUser
 )
