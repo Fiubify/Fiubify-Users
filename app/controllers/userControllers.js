@@ -1,5 +1,5 @@
 const firebaseAuth = require("../services/firebase").auth;
-const { getUserWalletBalance, createTransaction } = require("../services/payments");
+const { createPayment, createTransaction, createWithdrawal } = require("../services/payments");
 const User = require("../models/userModel");
 const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
@@ -130,26 +130,19 @@ const upgradeUserSubscription = async (req, res, next) => {
     return
   }
 
-  let user_wallet_balance = await getUserWalletBalance(user.walletAddress)
-  if (user_wallet_balance >= premium_plan_cost) {
-    try {
-      await user.updateOne({plan: 'Premium'})
-      res.status(204).json({})
-    } catch (e) {
-      console.log(e)
-      next(
-        apiError.internalError(
-          "Internal error when trying to change subscription plan"
-        )
-      )
-    }
-  } else {
-    next(apiError.invalidArguments("Insufficient funds"))
+  try {
+    let response = await createPayment(user.walletAddress, premium_plan_cost)
+    console.log(response)
+    await user.updateOne({plan: 'Premium'})
+    res.status(204).json({})
+  } catch (e) {
+    console.log(e)
+    next(apiError.internalError("Internal error when trying to change subscription plan"))
   }
 }
 
 const donateToUser = async (req, res, next) => {
-  const fromUserId = req.body.from_uid
+  const fromUserId = req.params.uid
   const fromUser = await User.findOne({ uid: fromUserId })
   if (fromUser === null) {
     next(apiError.resourceNotFound(`User with id ${fromUserId} doesn't exists`))
@@ -181,6 +174,26 @@ const donateToUser = async (req, res, next) => {
   }
 }
 
+const withdrawFunds = async (req, res, next) => {
+  const userId = req.params.uid
+  const user = await User.findOne({ uid: userId })
+  if (user === null) {
+    next(apiError.resourceNotFound(`User with id ${userId} doesn't exists`))
+    return;
+  }
+
+  const toAddress = req.body.to_address
+  const amount = req.body.amount
+
+  try {
+    await createWithdrawal(user.walletAddress, toAddress, amount)
+    res.status(204).json({})
+  } catch (e) {
+    console.log(e)
+    next(apiError.internalError("Internal error when trying to withdraw"))
+  }
+}
+
 module.exports = {
   getAllUsers,
   blockUser,
@@ -189,4 +202,5 @@ module.exports = {
   getUser,
   upgradeUserSubscription,
   donateToUser,
+  withdrawFunds,
 };

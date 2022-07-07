@@ -24,6 +24,24 @@ const getUserWalletBalance = async (wallet_address) => {
   return response.data.data.balance
 }
 
+const createPayment = async (from_address, amount) => {
+  var response
+
+  try {
+    const request = {
+      from_address: from_address,
+      amount: amount
+    }
+
+    response = await axios.post("https://fiubify-payments-staging.herokuapp.com/wallet/payment", request)
+  } catch (error) {
+    console.log(`Error executing payment: ${error}`)
+    return
+  }
+
+  return response.data
+}
+
 const createTransaction = async (from_address, to_address, amount) => {
   var response
   try {
@@ -42,4 +60,22 @@ const createTransaction = async (from_address, to_address, amount) => {
   return response.data
 }
 
-module.exports = {createUserWallet, getUserWalletBalance, createTransaction}
+const createWithdrawal = async (from_address, to_address, amount) => {
+  var response
+  try {
+    const request = {
+      from_address: from_address,
+      to_address: to_address,
+      amount: amount
+    }
+
+    response = await axios.post("https://fiubify-payments-staging.herokuapp.com/wallet/withdrawal", request)
+  } catch (error) {
+    console.log(`Error withdrawing: ${error}`)
+    return
+  }
+
+  return response.data
+}
+
+module.exports = {createUserWallet, getUserWalletBalance, createPayment, createTransaction, createWithdrawal}
