@@ -2,8 +2,11 @@ openapi: 3.0.3
 info:
   title: Users
   description: User authorization and management
-  version: 1.0.0-oas3-oas3
+  version: 1.0-oas3
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/SERVICESMANAGERWEB/Users/1.0-oas3
   - url: https://fiubify-users-staging.herokuapp.com/
 components:
   schemas:
@@ -169,7 +172,7 @@ paths:
       parameters:
         - name: uid
           in: query
-          description: User's firbase uid
+          description: User's firebase uid
           schema:
             type: string
         - name: token
@@ -250,7 +253,324 @@ paths:
         '500':
           description: Internal error
 
-  user/:donator_uid/donate:
+  user/:uid/donate:
     post:
-      description:
-    #TODO
+      description: Donate funds from one user to another.
+      parameters:
+        - name: uid
+          in: query
+          description: User's firebase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User's firebase token
+          schema:
+            type: string
+        - name: to_uid
+          in: body
+          description: User's firebase uid to donate to
+          schema:
+            type: string
+        - name: amount
+          in: body
+          description: Funds amount to donate
+          schema:
+            type: number
+      security:
+        - token: []
+        - uid: []
+      responses:
+        '204':
+          description: Donate specified amount from user's uid to user's to_uid
+        '400':
+          description: Bad Request / Invalid arguments
+        '403':
+          description: User token doesn't belong to sent uid
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal error
+
+  user/:uid/withdraw:
+    post:
+      description: Transfer funds from intern application wallet to an extern wallet.
+      parameters:
+        - name: uid
+          in: query
+          description: User's firebase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User's firebase token
+          schema:
+            type: string
+        - name: to_address
+          in: body
+          description: Extern wallet address
+          schema:
+            type: string
+        - name: amount
+          in: body
+          description: Funds amount to donate
+          schema:
+            type: number
+      security:
+        - token: []
+        - uid: []
+      responses:
+        '204':
+          description: Transfer specified amount from user's wallet to an extern wallet
+        '400':
+          description: Bad Request / Invalid arguments
+        '403':
+          description: User token doesn't belong to sent uid
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal error
+
+  auth/register-email:
+    post:
+      description: Register a user in mongoose and firebase database.
+      parameters:
+        - name: name
+          in: body
+          description: User's name
+          schema:
+            type: string
+        - name: surname
+          in: body
+          description: User's surname
+          schema:
+            type: string
+        - name: role
+          in: body
+          description: User`s role
+          schema:
+            type: string
+        - name: email
+          in: body
+          description: User`s email
+          schema:
+            type: string
+        - name: password
+          in: body
+          description: User's paswword
+          schema:
+            type: string
+        - name: birthdate
+          in: body
+          description: User's birthdate
+          schema:
+            description: stringify Date type
+        - name: plan
+          in: body
+          description: User's plan
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Register user successfully. Returns his/her firebase uid and mongoose id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+                    description: User's firebase uid
+                    example: sof14981m1245a
+                  id:
+                    type: string
+                    description: User's mongoose id
+                    example: 6689019401af21
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Invalid token
+        '500':
+          description: Internal error
+
+  auth/register-provider:
+    post:
+      description: Register a user in mongoose database.
+      parameters:
+        - name: name
+          in: body
+          description: User's name
+          schema:
+            type: string
+        - name: surname
+          in: body
+          description: User's surname
+          schema:
+            type: string
+        - name: role
+          in: body
+          description: User`s role
+          schema:
+            type: string
+        - name: email
+          in: body
+          description: User`s email
+          schema:
+            type: string
+        - name: password
+          in: body
+          description: User's paswword
+          schema:
+            type: string
+        - name: birthdate
+          in: body
+          description: User's birthdate
+          schema:
+            description: stringify Date type
+        - name: plan
+          in: body
+          description: User's plan
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Regiter user successfully. Returns his/her firebase uid and mongoose id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+                    description: User's firebase uid
+                    example: sof14981m1245a
+                  id:
+                    type: string
+                    description: User's mongoose id
+                    example: 6689019401af21
+        '400':
+          description: Invalid arguments passed
+
+  auth/validate:
+    post:
+      description: Validate user using role and firebase token.
+      parameters:
+        - name: role
+          in: body
+          description: User`s role
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User`s firebase token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User validated succesfully
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Invalid token
+        '403':
+          description: You need to be a ${role} to access
+        '404':
+          description: User with passed token doesn't exists
+        '500':
+          description: Internal error
+
+  auth/validate/uid:
+    post:
+      description: Validate user using firebase user's token and uid.
+      parameters:
+        - name: uid
+          in: body
+          description: User`s firebase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User`s firebase token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User validated succesfully
+        '400':
+          description: No valid uid
+        '403':
+          description: User token doesn't belong to sent uid
+
+  auth/validate/admin:
+    post:
+      description: Validate if user has Admin role.
+      parameters:
+        - name: token
+          in: body
+          description: User`s firebase token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User validated succesfully
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Invalid token
+        '403':
+          description: You need to be a ${role} to access
+        '404':
+          description: User with passed token doesn't exists
+        '500':
+          description: Internal error
+
+  auth/validate/user:
+    post:
+      description: Validate if user token belongs to user's uid.
+      parameters:
+        - name: userId
+          in: body
+          description: User`s firebase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User`s firebase token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User validated succesfully
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Invalid token
+        '403':
+          description: User with ${uid} doesn't have access to this resource
+        '404':
+          description: User with passed token doesn't exists
+        '500':
+          description: Internal error
+
+  auth/validate/users:
+    post:
+      description: Validate if a user token belongs to any of user's uid passed.
+      parameters:
+        - name: userId
+          in: body
+          description: User`s firebase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User`s firebase token
+          schema:
+            type: array
+            items:
+              type: string
+              description: User uid
+      responses:
+        '200':
+          description: User validated succesfully
+        '403':
+          description: Users provided don't have access to this resource
