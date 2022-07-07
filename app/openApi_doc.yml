@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: Users
+  description: User authorization and management
+  version: 1.0.0-oas3-oas3
+servers:
+  - url: https://fiubify-users-staging.herokuapp.com/
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        uid:
+          type: string
+          uniqueItems: true
+        email:
+          type: string
+          format: email
+          uniqueItems: true
+        role:
+          type: string
+          enum:
+            - Listener
+            - Artist
+            - Admin
+        disabled:
+          type: boolean
+          default: false
+        name:
+          type: string
+        surname:
+          type: string
+        birthdate:
+          description: Date type
+        plan:
+          type: string
+          enum:
+            - Free
+            - Premium
+          default: Free
+        walletAddress:
+          type: string
+          uniqueItems: true
+      required:
+        - uid
+        - email
+        - role
+        - walletAddress
+      example:
+        uid: 8723498573nwf
+        email: mail1@gmail.com
+        role: Listener
+        disabled: false
+        name: Nombre 1
+        surname: Apellido 1
+        birthdate: null
+        plan: Free
+        walletAddress: 1.1080539127452732e+48
+
+  securitySchemes:
+    token:
+      in: header
+      type: apiKey
+      name: token
+      description: user's firebase token
+    uid:
+      in: query
+      type: apiKey
+      name: token
+      description: user's firebase uid
+
+
+security:
+  - token: []
+  - uid:  []
+
+paths:
+  user/:
+    get:
+      description: Get all users matching your search criteria
+      parameters:
+        - name: name
+          in: query
+          description: User's name
+          schema:
+            type: string
+        - name: role
+          in: query
+          description: User`s role
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: User`s email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List with all the users matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: No users matching the search criteria
+        '500':
+          description: Internal error
+
+  user/:uid:
+    get:
+      description: Get user with uid specified by params
+      parameters:
+        - name: uid
+          in: query
+          description: User's firebase uid
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User with the uid specified
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: No uid was passed
+        '404':
+          description: User with id ${uid} doesn't exists
+        '500':
+          description: Internal error when trying to get users information
+
+    patch:
+      description: Edit user's profile with uid specified by params
+      parameters:
+        - name: uid
+          in: query
+          description: User's firbase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User's firebase token
+          schema:
+            type: string
+      security:
+        - token: []
+        - uid: []
+      responses:
+        '204':
+          description: User with the uid specified
+        '400':
+          description: Bad Request / Invalid arguments
+        '403':
+          description: User token doesn't belong to sent uid
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal error
+
+  user/:uid/upgrade-subscription:
+    patch:
+      description: Upgrade user's subscription plan with uid specified by params
+      parameters:
+        - name: uid
+          in: query
+          description: User's firbase uid
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User's firebase token
+          schema:
+            type: string
+      security:
+        - token: []
+        - uid: []
+      responses:
+        '204':
+          description: Upgraded user's subscription plan to premium
+        '400':
+          description: Bad Request / Invalid arguments
+        '403':
+          description: User token doesn't belong to sent uid
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal error
+
+  user/block/:id:
+    patch:
+      description: Block user with id provided by params
+      parameters:
+        - name: id
+          in: query
+          description: User's mongoose id
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User's firebase token
+          schema:
+            type: string
+      security:
+        - token: []
+        - uid: []
+      responses:
+        '204':
+          description: Blocked user with ${id}
+        '400':
+          description: Bad Request / Invalid arguments
+        '403':
+          description: User token doesn't belong to sent uid
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal error
+
+  user/unblock/:id:
+    patch:
+      description: Unblock user with id provided by params
+      parameters:
+        - name: id
+          in: query
+          description: User's mongoose id
+          schema:
+            type: string
+        - name: token
+          in: body
+          description: User's firebase token
+          schema:
+            type: string
+      security:
+        - token: []
+        - uid: []
+      responses:
+        '204':
+          description: Unblocked user with ${id}
+        '400':
+          description: Bad Request / Invalid arguments
+        '403':
+          description: User token doesn't belong to sent uid
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal error
+
+  user/:donator_uid/donate:
+    post:
+      description:
+    #TODO
