@@ -15,11 +15,7 @@ if (process.env.NODE_ENV === "DEV") {
 } else {
   router.patch("/:uid", protectUrlByUser, userControllers.editUserProfile);
 }
-router.patch(
-  "/:uid/upgrade-subscription",
-  protectUrlByUser,
-  userControllers.upgradeUserSubscription
-);
+
 router.patch(
   "/block/:id",
   protectUrlByRole("Admin"),
@@ -30,10 +26,20 @@ router.patch(
   protectUrlByRole("Admin"),
   userControllers.unblockUser
 );
+router.patch(
+  "/:uid/upgrade-subscription",
+  protectUrlByUser,
+  userControllers.upgradeUserSubscription
+);
 router.post(
-  "/:donator_uid/donate",
+  "/:uid/donate",
   protectUrlByUser,
   userControllers.donateToUser
-)
+);
+router.post(
+  "/:uid/withdraw",
+  protectUrlByUser,
+  userControllers.donateToUser
+);
 
 module.exports = router;
