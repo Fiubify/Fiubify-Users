@@ -1,5 +1,5 @@
 const firebaseAuth = require("../services/firebase").auth;
-const { getUserWalletBalance, createPayment, createTransaction, createWithdrawal } = require("../services/payments");
+const { createPayment, createTransaction, createWithdrawal } = require("../services/payments");
 const User = require("../models/userModel");
 const apiError = require("../errors/apiError");
 const QueryParser = require("../utils/QueryParser");
@@ -132,6 +132,7 @@ const upgradeUserSubscription = async (req, res, next) => {
 
   try {
     let response = await createPayment(user.walletAddress, premium_plan_cost)
+    console.log(response)
     await user.updateOne({plan: 'Premium'})
     res.status(204).json({})
   } catch (e) {
@@ -201,4 +202,5 @@ module.exports = {
   getUser,
   upgradeUserSubscription,
   donateToUser,
+  withdrawFunds,
 };

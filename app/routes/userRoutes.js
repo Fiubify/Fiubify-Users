@@ -39,7 +39,7 @@ router.post(
 router.post(
   "/:uid/withdraw",
   protectUrlByUser,
-  userControllers.donateToUser
+  userControllers.withdrawFunds
 );
 
 module.exports = router;
